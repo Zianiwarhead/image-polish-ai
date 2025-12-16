@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
@@ -37,14 +38,27 @@
       }
     </script>
     <style>
+      :root {
+        --bg-color: #ffffff;
+        --beam-opacity: 0.7;
+        --beam-blend: normal;
+      }
+
+      html.dark {
+        --bg-color: #0a0a0a;
+        --beam-opacity: 0.6;
+        --beam-blend: screen;
+      }
+
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #ffffff;
+        background-color: var(--bg-color);
         min-height: 100vh;
         position: relative;
+        transition: background-color 0.5s ease;
       }
       
-      /* Noise Texture Overlay - High z-index but pointer-events-none */
+      /* Noise Texture Overlay */
       .bg-noise {
         position: fixed;
         top: 0;
@@ -57,16 +71,14 @@
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       }
 
-      /* 
-       * Moverails-inspired Beams 
-       * Creating two angled gradients that meet at the bottom
-       */
+      /* Beams */
       .gradient-beam-left {
         position: fixed;
         bottom: -20vh;
         left: -10vw;
         width: 80vw;
         height: 100vh;
+        /* Light Mode: Black base for contrast against white */
         background: linear-gradient(65deg, 
           rgba(0,0,0,1) 0%, 
           rgba(185,28,28,0.9) 25%, 
@@ -77,7 +89,19 @@
         filter: blur(80px);
         z-index: 0;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: var(--beam-opacity);
+        mix-blend-mode: var(--beam-blend);
+        transition: opacity 0.5s ease;
+      }
+
+      /* Dark Mode Override for Beams: Remove black, focus on color glow */
+      html.dark .gradient-beam-left {
+        background: linear-gradient(65deg, 
+          rgba(100,0,0,0.8) 0%, 
+          rgba(220, 38, 38, 0.6) 25%, 
+          rgba(250,204,21,0.4) 50%, 
+          rgba(0,0,0,0) 80%
+        );
       }
 
       .gradient-beam-right {
@@ -96,7 +120,18 @@
         filter: blur(80px);
         z-index: 0;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: var(--beam-opacity);
+        mix-blend-mode: var(--beam-blend);
+        transition: opacity 0.5s ease;
+      }
+
+      html.dark .gradient-beam-right {
+         background: linear-gradient(-65deg, 
+          rgba(100,0,0,0.8) 0%, 
+          rgba(220, 38, 38, 0.6) 25%, 
+          rgba(250,204,21,0.4) 50%, 
+          rgba(0,0,0,0) 80%
+        );
       }
 
       /* Scrollbar */
@@ -110,6 +145,9 @@
       ::-webkit-scrollbar-thumb {
         background: #d1d5db;
         border-radius: 10px;
+      }
+      html.dark ::-webkit-scrollbar-thumb {
+        background: #4b5563;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #9ca3af;
@@ -127,7 +165,7 @@
 }
 </script>
 </head>
-  <body class="bg-white text-gray-900 antialiased selection:bg-black selection:text-white">
+  <body class="bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
     <!-- Atmospheric Background Elements -->
     <div class="gradient-beam-left"></div>
     <div class="gradient-beam-right"></div>
