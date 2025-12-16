@@ -1,0 +1,5 @@
+{
+  "name": "ProductPolish AI",
+  "description": "Professional product photo editing and background removal using Gemini 2.5 Flash Image. Simply upload a photo and type your instructions.",
+  "requestFramePermissions": []
+}
